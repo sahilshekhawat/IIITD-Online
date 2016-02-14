@@ -1,5 +1,6 @@
 package online.iiitd.edu.in.iiitd_online;
 
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -43,8 +44,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("Courses");
+//        setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -55,12 +57,43 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        Drawable icon = this.getResources().getDrawable(R.mipmap.ic_hr);
+        icon.setBounds(0, 0, 100, 100);
+        tabLayout.getTabAt(0).setIcon(icon);
+        tabLayout.getTabAt(1).setIcon(icon);
+        tabLayout.getTabAt(2).setIcon(icon);
+        tabLayout.getTabAt(3).setIcon(icon);
 
         //change status bar color
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimaryDark));
+        window.setStatusBarColor(this.getResources().getColor(R.color.quorareddark));
+
+        //dynamically changing action bar title
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 0)
+                    toolbar.setTitle("Courses");
+                if(position == 1)
+                    toolbar.setTitle("Communities");
+                if(position == 2)
+                    toolbar.setTitle("All Notifications");
+                if(position == 3)
+                    toolbar.setTitle("Profile");
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
 //        Removing floating action bar.
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -157,16 +190,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "SECTION 1";
-                case 1:
-                    return "SECTION 2";
-                case 2:
-                    return "SECTION 3";
-                case 3:
-                    return "SECTION 4";
-            }
+//            switch (position) {
+//                case 0:
+//                    return "";
+//                case 1:
+//                    return "";
+//                case 2:
+//                    return "";
+//                case 3:
+//                    return "";
+//            }
             return null;
         }
     }
