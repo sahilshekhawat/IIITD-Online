@@ -1,9 +1,9 @@
 package online.iiitd.edu.in.iiitd_online;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -13,8 +13,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -38,11 +36,13 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
+    private SharedPreferences mPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mPreferences = getSharedPreferences("CurrentUser", MODE_PRIVATE);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("Courses");
@@ -203,4 +203,22 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mPreferences.contains("AuthToken")) {
+//            loadTasksFromAPI(TASKS_URL);
+        } else {
+            Intent intent = new Intent(MainActivity.this, WelcomeActivity.class);
+            startActivityForResult(intent, 0);
+        }
+    }
+
+//    private void loadTasksFromAPI(String url) {
+//        GetTasksTask getTasksTask = new GetTasksTask(MainActivity.this);
+//        getTasksTask.setMessageLoading("Loading tasks...");
+//        getTasksTask.execute(url + "?auth_token=" + mPreferences.getString("AuthToken", ""));
+//    }
 }
