@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/quorared</item>
         <item name="colorPrimaryDark">@color/quorareddark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+
     </style>
 
     <style name="AppTheme.NoActionBar">

@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="colorPink">#F05282</color>
+    <color name="colorYellow">#FEBA4D</color>
+    <color name="colorBlue">#4183D1</color>
+
     <color name="quorared">#B92B27</color>
     <color name="quorareddark">#771701</color>
 </resources>
