@@ -24,11 +24,12 @@ import cz.msebera.android.httpclient.Header;
 
 public class Community extends AppCompatActivity {
 
-    private String TAG = "Community";
+
     TextView title = null;
     TextView about = null;
     TextView admin_name = null;
     TextView admin_email = null;
+    private String TAG = "DEBUG";
     private String URL = "https://immense-tundra-31422.herokuapp.com/";
 
 

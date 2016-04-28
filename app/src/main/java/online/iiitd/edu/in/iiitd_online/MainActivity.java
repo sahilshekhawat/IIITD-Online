@@ -3,6 +3,8 @@ package online.iiitd.edu.in.iiitd_online;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +30,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
@@ -44,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private String TAG = "DEBUG";
+    private String URL = "https://immense-tundra-31422.herokuapp.com/";
+    Session session = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        session = new Session(getApplicationContext());
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -74,12 +89,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-        Drawable icon = this.getResources().getDrawable(R.mipmap.ic_hr);
-        icon.setBounds(0, 0, 100, 100);
-        tabLayout.getTabAt(0).setIcon(icon);
-        tabLayout.getTabAt(1).setIcon(icon);
-        tabLayout.getTabAt(2).setIcon(icon);
-        tabLayout.getTabAt(3).setIcon(icon);
+        Drawable icon0 = this.getResources().getDrawable(R.drawable.ic_community);
+        Drawable icon1 = this.getResources().getDrawable(R.drawable.ic_notif);
+        Drawable icon2 = this.getResources().getDrawable(R.drawable.ic_profile);
+        icon0.setBounds(0, 0, 100, 100);
+        icon1.setBounds(0, 0, 100, 100);
+        icon2.setBounds(0, 0, 100, 100);
+        tabLayout.getTabAt(0).setIcon(icon0);
+        tabLayout.getTabAt(1).setIcon(icon1);
+        tabLayout.getTabAt(2).setIcon(icon2);
 
         toolbar.setTitleTextColor(Color.WHITE);
 
@@ -87,7 +105,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Window window = this.getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.colorBlue));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorBlue));
+        }
+
+        /*
+        get current user's all data as json*/
+
+        getData();
+
+
 
         //dynamically changing action bar title
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -122,6 +149,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            }
 //        });
 
+    }
+
+
+    public void getData(){
+        final AsyncHttpClient client = new AsyncHttpClient();
+        client.get(URL + "api/v1/users/getcurrentuser?auth_token="+session.getSth("auth_token"), new JsonHttpResponseHandler(){
+
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            View header=navigationView.getHeaderView(0);
+
+            final TextView nameView = (TextView) header.findViewById(R.id.name);
+            final TextView emailView = (TextView) header.findViewById(R.id.email);
+
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+
+
+
+                    JSONArray temp = response.getJSONArray("data");
+                    JSONObject obj = (JSONObject) temp.get(0);
+
+                    nameView.setText(obj.getString("name")); //setting collapse bar title
+                    emailView.setText(obj.getString("email")); //setting collapse bar title
+
+                    //set session variable sin sharedPref
+
+                    session.setSth("id", obj.getString("id"));
+                    session.setSth("name", obj.getString("name"));
+                    session.setSth("email", obj.getString("email"));
+                    session.setSth("about", obj.getString("about"));
+                    session.setSth("avatar", obj.getString("avatar"));
+                    session.setSth("sex", obj.getString("sex"));
+
+
+//                   admin.setText(obj.getString("user_id"));
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            public void onFailure(Throwable error, String content) {
+                error.printStackTrace();
+                Log.d(TAG, "onFailure");
+            }
+        });
     }
 
 //    Removing menu
@@ -202,7 +281,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 4;
+            return 3;
         }
 
         @Override

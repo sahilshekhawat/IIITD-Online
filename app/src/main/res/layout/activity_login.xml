@@ -9,4 +9,84 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="online.iiitd.edu.in.iiitd_online.LoginActivity">
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="146dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/email"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:paddingLeft="10dp"
+            android:textAlignment="center"
+            android:hint="Email ID"
+            android:background="@drawable/textlines"
+            android:padding="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/pwd"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:paddingLeft="10dp"
+            android:textAlignment="center"
+            android:hint="Password"
+            android:background="@drawable/textlines"
+            android:inputType="textPassword"
+            android:padding="10dp" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log In"
+            android:id="@+id/btn"
+            android:layout_gravity="center_horizontal"
+            android:foregroundTint="@color/colorPink"
+            android:background="@color/colorPink"
+            android:textColor="#fff"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don&apos;t Have an account? Sign up"
+            android:id="@+id/button"
+            android:layout_gravity="center_horizontal"
+            android:background="#fff"
+            android:textSize="10dp"
+            android:textColor="#aaa"
+            android:paddingTop="0dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="10dp"
+            android:layout_marginTop="10dp" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Login"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="44dp"
+        android:background="@color/colorBlue"
+        android:textColor="#fff"
+        android:padding="15dp"
+        />
+
 </RelativeLayout>

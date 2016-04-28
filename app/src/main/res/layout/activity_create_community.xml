@@ -7,7 +7,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="online.iiitd.edu.in.iiitd_online.CreateCommunity">
+    tools:context="online.iiitd.edu.in.iiitd_online.CreateCommunity"
+    android:background="#fff">
 
     <LinearLayout
         android:orientation="vertical"
@@ -27,7 +28,9 @@
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
             android:textAlignment="center"
-            android:hint="Community Name" />
+            android:hint="Community Name"
+            android:background="@drawable/textlines"
+            android:padding="10dp" />
 
         <EditText
             android:layout_width="match_parent"
@@ -37,7 +40,9 @@
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
             android:textAlignment="center"
-            android:hint="Something about this community..." />
+            android:hint="Something about this community..."
+            android:background="@drawable/textlines"
+            android:padding="10dp" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -47,7 +52,7 @@
             android:id="@+id/btn"
             android:layout_gravity="center_horizontal"
             android:foregroundTint="@color/colorPink"
-            android:background="@color/colorYellow"
+            android:background="@color/colorPink"
             android:textColor="#fff"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
@@ -64,7 +69,8 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="44dp"
-        android:background="@color/colorYellow"
+        android:background="@color/colorBlue"
         android:textColor="#fff"
-        android:padding="15dp" />
+        android:padding="15dp"
+        />
 </RelativeLayout>
