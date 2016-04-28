@@ -29,6 +29,7 @@ public class Community extends AppCompatActivity {
     TextView about = null;
     TextView admin_name = null;
     TextView admin_email = null;
+    private String URL = "https://immense-tundra-31422.herokuapp.com/";
 
 
     @Override
@@ -61,7 +62,7 @@ public class Community extends AppCompatActivity {
 
         public void getData(){
             final AsyncHttpClient client = new AsyncHttpClient();
-            client.get("http://192.168.53.208:3000/api/v1/communities/1", new JsonHttpResponseHandler(){
+            client.get(URL + "api/v1/communities/1", new JsonHttpResponseHandler(){
 
                 final CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
 
@@ -79,7 +80,7 @@ public class Community extends AppCompatActivity {
 
                         //setting admin details
                         if(obj.getString("user_id") != null){
-                            client.get("http://192.168.53.208:3000/api/v1/users/"+obj.getString("user_id"), new JsonHttpResponseHandler(){
+                            client.get(URL + "api/v1/users/"+obj.getString("user_id"), new JsonHttpResponseHandler(){
 
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

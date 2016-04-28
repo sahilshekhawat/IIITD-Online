@@ -5,9 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="50dp"
     android:elevation="3dp"
-    android:background="@color/quorared"
+    android:background="@color/colorBlue"
     app:layout_scrollFlags="scroll|enterAlways"
     app:popupTheme="@style/AppTheme.PopupOverlay"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:clickable="true"
+    android:title="Socify">
+
+
 
 </android.support.v7.widget.Toolbar>
