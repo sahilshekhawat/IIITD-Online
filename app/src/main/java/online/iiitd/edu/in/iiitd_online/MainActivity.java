@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -307,15 +308,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.new_com) {
-            // Handle the camera action
+            // Create new activity
             Intent i = new Intent(this, CreateCommunity.class);
             startActivity(i);
 
+        }
+        else if (id == R.id.logout){
+            // Logout
+            logout();
         }
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void logout() {
+        final AsyncHttpClient client = new AsyncHttpClient();
+        client.delete(URL + "api/v1/sessions?auth_token="+session.getSth("auth_token"), new JsonHttpResponseHandler(){
+
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+
+
+
+                    if(response.getBoolean("success") == true){
+
+                        session.deletePref();
+                        Toast.makeText(MainActivity.this, "Logged out successfully", Toast.LENGTH_LONG).show();
+                        Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(i);
+                        finish();
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "Could not log you out. Sorry.", Toast.LENGTH_LONG).show();
+                    }
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            public void onFailure(Throwable error, String content) {
+                error.printStackTrace();
+                Log.d(TAG, "onFailure");
+            }
+
+
+        });
     }
 }

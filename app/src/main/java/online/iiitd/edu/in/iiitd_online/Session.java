@@ -14,6 +14,7 @@ public class Session {
     public Session(Context cntx) {
         // TODO Auto-generated constructor stub
         prefs = PreferenceManager.getDefaultSharedPreferences(cntx);
+
     }
 
     public void setSth(String key, String val) {
@@ -24,5 +25,9 @@ public class Session {
     public String getSth(String key) {
         String sth = prefs.getString(""+key,"");
         return sth;
+    }
+    public void deletePref(){
+        prefs.edit().clear().commit();
+        return;
     }
 }

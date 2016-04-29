@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPersonName"
             android:ems="10"
-            android:id="@+id/editText"
+            android:id="@+id/name"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
@@ -35,7 +35,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText2"
+            android:id="@+id/about"
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
             android:paddingLeft="10dp"

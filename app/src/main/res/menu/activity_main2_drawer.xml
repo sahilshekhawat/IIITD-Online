@@ -6,6 +6,10 @@
             android:id="@+id/new_com"
             android:icon="@drawable/ic_new_comm"
             android:title="New Community" />
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/ic_left_down_arrow"
+            android:title="Logout" />
     </group>
 
 </menu>
