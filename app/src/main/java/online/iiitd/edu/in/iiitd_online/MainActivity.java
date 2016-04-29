@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
         session = new Session(getApplicationContext());
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -116,6 +118,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getData();
 
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity.this, AllCommunities.class);
+                startActivity(i);
+            }
+        });
 
         //dynamically changing action bar title
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -126,12 +135,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public void onPageSelected(int position) {
+
                 if(position == 0)
+                {
                     toolbar.setTitle("Communities");
+                    fab.show();
+                }
                 if(position == 1)
+                {
                     toolbar.setTitle("All Notifications");
+                    fab.hide();
+                }
                 if(position == 2)
+                {
                     toolbar.setTitle("Profile");
+                    fab.hide();
+                }
             }
 
             @Override
@@ -173,6 +192,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     JSONArray temp = response.getJSONArray("data");
                     JSONObject obj = (JSONObject) temp.get(0);
+
+
+
+//
+//                    for (int i = 0; i < comm_arr.length(); i++) {
+//                        JSONObject row = comm_arr.getJSONObject(i);
+////                        id = row.getInt("id");
+//
+//                        row.getJSONObject()
+//                        JSONObject obj2 = (JSONObject) comm_arr.get(0);
+//                    }
 
                     nameView.setText(obj.getString("name")); //setting collapse bar title
                     emailView.setText(obj.getString("email")); //setting collapse bar title
