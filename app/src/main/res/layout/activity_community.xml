@@ -46,7 +46,7 @@
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
         android:background="@color/colorBlue"
-        app:backgroundTint="@color/colorYellow"
-        android:visibility="gone" />
+        app:backgroundTint="@color/colorYellow" />
+
 
 </android.support.design.widget.CoordinatorLayout>

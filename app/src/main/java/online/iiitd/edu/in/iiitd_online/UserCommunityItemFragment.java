@@ -158,6 +158,12 @@ public class UserCommunityItemFragment extends Fragment {
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        getData();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;

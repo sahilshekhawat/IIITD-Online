@@ -10,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -26,10 +27,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.ByteArrayEntity;
+import online.iiitd.edu.in.iiitd_online.usercommunity.UserCommunityContent;
 
 public class Community extends AppCompatActivity {
 
@@ -42,6 +45,10 @@ public class Community extends AppCompatActivity {
     private String URL;
     private boolean isFollowing = false;
     FloatingActionButton fab;
+    CommunityPostsItemRecyclerViewAdapter myUserCommunityItemRecyclerViewAdapter;
+    ArrayList<UserCommunityContent.UserCommunityItem> userCommunityItems = new ArrayList<>();
+    private UserCommunityItemFragment.OnUserCommunityFragmentInteractionListener mListener;
+
     private Session session;//global variable
 
     @Override
@@ -59,12 +66,16 @@ public class Community extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
+//      TODO Not working
+//        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+//        p.setBehavior(null); //should disable default animations
+//        p.setAnchorId(View.NO_ID); //should let you set visibility
+//        fab.setLayoutParams(p);
+//        fab.setVisibility(View.GONE); // View.INVISIBLE might also be worth trying
 
-        CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
-        p.setBehavior(null); //should disable default animations
-        p.setAnchorId(View.NO_ID); //should let you set visibility
-        fab.setLayoutParams(p);
-        fab.setVisibility(View.GONE); // View.INVISIBLE might also be worth trying
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.communitypostlist);
+        myUserCommunityItemRecyclerViewAdapter = new CommunityPostsItemRecyclerViewAdapter(userCommunityItems, mListener);
+        recyclerView.setAdapter(myUserCommunityItemRecyclerViewAdapter);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -72,6 +83,8 @@ public class Community extends AppCompatActivity {
             getData(id.toString());
         }
     }
+
+
     public void getData(final String id){
             final AsyncHttpClient client = new AsyncHttpClient();
             client.get(URL + "api/v1/communities/"+id, new JsonHttpResponseHandler(){
@@ -100,6 +113,18 @@ public class Community extends AppCompatActivity {
                         collapsingToolbar.setTitle(obj.getString("name")); //setting collapse bar title
                         about.setText(obj.getString("about"));
 //                        admin.setText(obj.getString("user_id"));
+
+
+                        //Getting posts
+                        JSONArray postsArray = obj.getJSONArray("posts");
+                        Log.d(TAG + "###", postsArray.toString());
+                        for(int i=0; i<postsArray.length(); i++){
+                            JSONObject tmp = postsArray.getJSONObject(i);
+                            UserCommunityContent.UserCommunityItem userCommunityItem = new UserCommunityContent.UserCommunityItem(Integer.toString(tmp.getInt("id")) ,tmp.getString("content"));
+                            userCommunityItems.add(userCommunityItem);
+                        }
+
+                        myUserCommunityItemRecyclerViewAdapter.notifyDataSetChanged();
 
                         //setting admin details
                         if(obj.getString("user_id") != null){
@@ -137,7 +162,6 @@ public class Community extends AppCompatActivity {
                             p.setAnchorId(R.id.app_bar);
                             fab.setLayoutParams(p);
 
-
                             fab.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -145,6 +169,13 @@ public class Community extends AppCompatActivity {
                                     Log.v(TAG, " this community ID = " + id);
                                 }
                             });
+                        } else{
+                            Log.d(TAG + "@@@", "Removing fab");
+                            CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
+                            p.setBehavior(null); //should disable default animations
+                            p.setAnchorId(View.NO_ID); //should let you set visibility
+                            fab.setLayoutParams(p);
+                            fab.setVisibility(View.GONE);
                         }
 
                         //changing icon ifFollowing==true
