@@ -36,7 +36,7 @@ public class AllCommunities extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.cardList);
 //communities
         // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
+        // in name do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
         rotor = (ProgressBar) findViewById(R.id.progressBar);

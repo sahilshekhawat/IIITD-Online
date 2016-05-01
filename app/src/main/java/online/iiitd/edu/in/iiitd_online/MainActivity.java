@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,7 +20,6 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,13 +37,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import cz.msebera.android.httpclient.Header;
+import online.iiitd.edu.in.iiitd_online.usercommunity.UserCommunityContent;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, UserCommunityItemFragment.OnUserCommunityFragmentInteractionListener  {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -175,6 +172,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            }
 //        });
 
+    }
+
+    //Implementing interaction listener for user community tab
+    public void onUserCommunityFragmentInteraction(UserCommunityContent.UserCommunityItem item){
+        Intent i = new Intent(MainActivity.this, Community.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtra("id", Integer.parseInt(item.id));
+        startActivity(i);
     }
 
 
@@ -379,7 +384,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch(position){
+                case 0:
+                    return UserCommunityItemFragment.newInstance(1);
+                default:
+                    return PlaceholderFragment.newInstance(position + 1);
+            }
         }
 
         @Override

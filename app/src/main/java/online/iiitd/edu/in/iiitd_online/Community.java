@@ -66,18 +66,11 @@ public class Community extends AppCompatActivity {
         fab.setLayoutParams(p);
         fab.setVisibility(View.GONE); // View.INVISIBLE might also be worth trying
 
-
-
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             Integer id = extras.getInt("id");
             getData(id.toString());
         }
-
-
-
-
     }
     public void getData(final String id){
             final AsyncHttpClient client = new AsyncHttpClient();
@@ -137,6 +130,7 @@ public class Community extends AppCompatActivity {
 
                         //showing follow icon if this.user isn't admin
                         if(!(""+ obj.getInt("user_id")).equals(session.getSth("id"))){
+                            Log.d(TAG + "@@@", "setting fab");
                             //to bring things back to normal state
                             CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
                             p.setBehavior(new FloatingActionButton.Behavior());
@@ -272,8 +266,6 @@ public class Community extends AppCompatActivity {
                         }
                         e.printStackTrace();
                     }
-
-
                 }
 
                 @Override
@@ -288,15 +280,10 @@ public class Community extends AppCompatActivity {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                             Log.v(TAG, responseBody.toString());
-
                     JSONObject response = null;
                     try {
                         response = new JSONObject(new String(responseBody));
-
-
                         Log.v(TAG, response.toString());
-
-
                         if (response.getString("info").equals("success")) {
                             Toast.makeText(Community.this, "Followed", Toast.LENGTH_LONG).show();
                             isFollowing = !isFollowing;
@@ -308,32 +295,22 @@ public class Community extends AppCompatActivity {
                             } else {
                                 fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark));
                             }
-
-
                                 Toast.makeText(Community.this, "Failed", Toast.LENGTH_LONG).show();
-
                         }
-
                     } catch (JSONException e) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark, getApplicationContext().getTheme()));
                         } else {
                             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark));
                         }
-
                             e.printStackTrace();
                     }
-
-
                 }
-
                 @Override
                 public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
                 }
             });
         }
-
     }
 }
 
