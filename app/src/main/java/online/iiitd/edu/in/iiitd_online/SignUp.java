@@ -57,7 +57,7 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class SignUp extends AppCompatActivity {
 
-    private static final String URL = "https://immense-tundra-31422.herokuapp.com/";
+    private String URL;
     private static final String TAG = "DEBUG";
     private Session session;//global variable
 
@@ -66,7 +66,7 @@ public class SignUp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         final ProgressBar pg = (ProgressBar) findViewById(R.id.progressBar);
-
+        URL = getResources().getString(R.string.backendURL);
         pg.setVisibility(View.INVISIBLE);
 
 

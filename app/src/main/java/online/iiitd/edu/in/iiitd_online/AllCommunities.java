@@ -24,7 +24,7 @@ import cz.msebera.android.httpclient.Header;
 public class AllCommunities extends AppCompatActivity {
 
     private String TAG = "DEBUG";
-    private String URL = "https://immense-tundra-31422.herokuapp.com/";
+    private String URL;
     RecyclerView mRecyclerView;
     ProgressBar rotor ;
 
@@ -32,7 +32,7 @@ public class AllCommunities extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_communities);
-
+        URL = getResources().getString(R.string.backendURL);
         mRecyclerView = (RecyclerView) findViewById(R.id.cardList);
 //communities
         // use this setting to improve performance if you know that changes

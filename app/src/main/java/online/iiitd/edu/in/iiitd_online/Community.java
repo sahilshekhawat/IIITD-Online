@@ -1,5 +1,6 @@
 package online.iiitd.edu.in.iiitd_online;
 
+import android.content.Intent;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -24,6 +26,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.entity.ByteArrayEntity;
@@ -36,7 +39,8 @@ public class Community extends AppCompatActivity {
     TextView admin_name = null;
     TextView admin_email = null;
     private String TAG = "DEBUG";
-    private String URL = "https://immense-tundra-31422.herokuapp.com/";
+    private String URL;
+    private boolean isFollowing = false;
     FloatingActionButton fab;
     private Session session;//global variable
 
@@ -44,7 +48,7 @@ public class Community extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_community);
-
+        URL = getResources().getString(R.string.backendURL);
         session = new Session(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         title = (TextView) findViewById(R.id.title);
@@ -86,10 +90,19 @@ public class Community extends AppCompatActivity {
                     try {
 
 
+                        List list = session.getSet("i_am_following_communities");
+                        for (int i=0; i<list.size(); i++) {
+                            Log.d(TAG, "community id - " + list.get(i));
+                            if(id.equals(list.get(i))){
+                                isFollowing = true;
+                                break;
+                            }
+                        }
+
                         JSONArray temp = response.getJSONArray("data");
                         JSONObject obj = (JSONObject) temp.get(0);
                         Session session = new Session(getApplicationContext());
-                        Log.v(TAG, ""+ obj.getInt("user_id") + ","+session.getSth("id"));
+//                        Log.v(TAG, ""+ obj.getInt("user_id") + ","+session.getSth("id"));
 
                         collapsingToolbar.setTitle(obj.getString("name")); //setting collapse bar title
                         about.setText(obj.getString("about"));
@@ -122,6 +135,7 @@ public class Community extends AppCompatActivity {
                             });
                         }
 
+                        //showing follow icon if this.user isn't admin
                         if(!(""+ obj.getInt("user_id")).equals(session.getSth("id"))){
                             //to bring things back to normal state
                             CoordinatorLayout.LayoutParams p = (CoordinatorLayout.LayoutParams) fab.getLayoutParams();
@@ -134,8 +148,25 @@ public class Community extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     linkFollowBtn(id);
+                                    Log.v(TAG, " this community ID = " + id);
                                 }
                             });
+                        }
+
+                        //changing icon ifFollowing==true
+                        if(isFollowing) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_turned_in_black_24dp, getApplicationContext().getTheme()));
+                            } else {
+                                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_turned_in_black_24dp));
+                            }
+                        }
+                        else{
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark, getApplicationContext().getTheme()));
+                            } else {
+                                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark));
+                            }
                         }
 
                     } catch (JSONException e) {
@@ -152,6 +183,23 @@ public class Community extends AppCompatActivity {
         }
 
     private void linkFollowBtn(String id) {
+
+        //change the follow button for now (revert back if follow failed!)
+        if(isFollowing) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark, getApplicationContext().getTheme()));
+            } else {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark));
+            }
+        }
+        else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_turned_in_black_24dp, getApplicationContext().getTheme()));
+            } else {
+                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_turned_in_black_24dp));
+            }
+        }
+
         final AsyncHttpClient client = new AsyncHttpClient();
         //community_id
 
@@ -160,7 +208,9 @@ public class Community extends AppCompatActivity {
 
 
         try {
+
             obj.put("community_id", id);
+            Log.v(TAG, " this community followed = " + id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -173,42 +223,117 @@ public class Community extends AppCompatActivity {
         }
 
 
-        client.get(getApplicationContext(), URL + "api/v1/communities/"+id+"/followers", new AsyncHttpResponseHandler(){
 
 
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+        JSONObject jsonParams = new JSONObject();
+        try {
+            jsonParams.put("community_id", ""+id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-                JSONObject response = null;
-                try {
-                    response = new JSONObject(new String(responseBody));
+        Log.v(TAG, "isFollowing = " + isFollowing);
+        if(isFollowing){
+
+            client.post(getApplicationContext(), URL + "api/v1/follows/unfollow?auth_token="+session.getSth("auth_token"), _entity, "application/json", new AsyncHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+//                            Log.v(TAG, responseBody.toString());
+
+                    JSONObject response = null;
+                    try {
+                        response = new JSONObject(new String(responseBody));
 
 
-                    JSONArray temp = response.getJSONArray("data");
-                    JSONObject obj = (JSONObject) temp.get(0);
+                        Log.v(TAG, response.toString());
 
 
-                    if(response.getString("info").equals("success")){
+                        if (response.getString("info").equals("success")) {
+                            Toast.makeText(Community.this, "Unfollowed", Toast.LENGTH_LONG).show();
+                            isFollowing = !isFollowing;
+                            session.updateMyCommunities();
+
+                        } else {
+                            Log.v(TAG, responseBody.toString());
+                            Toast.makeText(Community.this, "Failed", Toast.LENGTH_LONG).show();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_turned_in_black_24dp, getApplicationContext().getTheme()));
+                            } else {
+                                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_turned_in_black_24dp));
+                            }
+                        }
+
+                    } catch (JSONException e) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_turned_in_black_24dp, getApplicationContext().getTheme()));
                         } else {
                             fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_turned_in_black_24dp));
                         }
+                        e.printStackTrace();
                     }
 
 
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                error.printStackTrace();
-                Log.d(TAG, "onFailure");
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                }
+            });
+        }
+        else{
+            client.post(getApplicationContext(), URL + "api/v1/follows?auth_token="+session.getSth("auth_token"), _entity, "application/json", new AsyncHttpResponseHandler() {
+
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                            Log.v(TAG, responseBody.toString());
+
+                    JSONObject response = null;
+                    try {
+                        response = new JSONObject(new String(responseBody));
+
+
+                        Log.v(TAG, response.toString());
+
+
+                        if (response.getString("info").equals("success")) {
+                            Toast.makeText(Community.this, "Followed", Toast.LENGTH_LONG).show();
+                            isFollowing = !isFollowing;
+                            session.updateMyCommunities();
+
+                        } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark, getApplicationContext().getTheme()));
+                            } else {
+                                fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark));
+                            }
+
+
+                                Toast.makeText(Community.this, "Failed", Toast.LENGTH_LONG).show();
+
+                        }
+
+                    } catch (JSONException e) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark, getApplicationContext().getTheme()));
+                        } else {
+                            fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_no_bookmark));
+                        }
+
+                            e.printStackTrace();
+                    }
+
+
+                }
+
+                @Override
+                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+
+                }
+            });
+        }
+
     }
 }
 

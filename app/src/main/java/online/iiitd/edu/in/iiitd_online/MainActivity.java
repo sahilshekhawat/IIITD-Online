@@ -39,6 +39,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
@@ -58,18 +63,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private ViewPager mViewPager;
     private String TAG = "DEBUG";
-    private String URL = "https://immense-tundra-31422.herokuapp.com/";
+    private String URL;
     Session session = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        URL = getResources().getString(R.string.backendURL);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         session = new Session(getApplicationContext());
+        session.printSharedPreferences();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -193,15 +199,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     JSONArray temp = response.getJSONArray("data");
                     JSONObject obj = (JSONObject) temp.get(0);
 
+                    JSONArray myComm = obj.getJSONArray("communities");
 
 
+
+
+                    ArrayList<String> listdata = new ArrayList<String>();
+
+                    if (myComm!= null) {
+                        for (int i=0;i<myComm.length();i++){
+                            JSONObject j = (JSONObject) myComm.get(i);
+                            listdata.add(""+j.getInt("id"));
+                        }
+                    }
+                    Set<String> set = new HashSet<String>();
+                    set.addAll(listdata);
+                    session.setSet("i_am_admin_communities", set);
+//                    session.printMyCommunities();
 //
-//                    for (int i = 0; i < comm_arr.length(); i++) {
-//                        JSONObject row = comm_arr.getJSONObject(i);
+////
+//                    for (int i = 0; i < myComm.length(); i++) {
+//                        JSONObject row = myComm.getJSONObject(i);
+//                        row.getInt("id");
 ////                        id = row.getInt("id");
-//
-//                        row.getJSONObject()
-//                        JSONObject obj2 = (JSONObject) comm_arr.get(0);
 //                    }
 
                     nameView.setText(obj.getString("name")); //setting collapse bar title
@@ -220,6 +240,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                   admin.setText(obj.getString("user_id"));
 
 
+                    //get current user's communities
+                    client.get(URL + "api/v1/users/" + session.getSth("id") + "/following", new JsonHttpResponseHandler(){
+
+
+
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            try {
+
+
+
+                                Log.v(TAG, response.toString());
+//                    JSONArray temp = response.getJSONArray("data");
+//                    JSONObject obj = (JSONObject) response.getJSONObject("following_communities");
+//                    Log.v(TAG, obj.toString());
+
+                                JSONArray myComm = response.getJSONArray("following_communities");
+
+
+
+
+                                ArrayList<String> listdata = new ArrayList<String>();
+
+                                if (myComm!= null) {
+                                    for (int i=0;i<myComm.length();i++){
+                                        JSONObject j = (JSONObject) myComm.get(i);
+                                        listdata.add(""+j.getInt("id"));
+                                    }
+                                }
+                                Set<String> set = new HashSet<String>();
+                                set.addAll(listdata);
+                                session.setSet("i_am_following_communities", set);
+
+
+//                   admin.setText(obj.getString("user_id"));
+
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+
+                        public void onFailure(Throwable error, String content) {
+                            error.printStackTrace();
+                            Log.d(TAG, "onFailure");
+                        }
+                    });
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -232,6 +301,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Log.d(TAG, "onFailure");
             }
         });
+
+
+
+
     }
 
 //    Removing menu

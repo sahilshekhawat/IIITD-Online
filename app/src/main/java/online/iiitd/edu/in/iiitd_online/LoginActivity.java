@@ -29,7 +29,7 @@ import cz.msebera.android.httpclient.protocol.HTTP;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String URL = "https://immense-tundra-31422.herokuapp.com/";
+    private  String URL;
     private static final String TAG = "DEBUG";
     private Session session;//global variable
 
@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        URL = getResources().getString(R.string.backendURL);
         final ProgressBar pg = (ProgressBar) findViewById(R.id.progressBar);
 
         pg.setVisibility(View.INVISIBLE);
@@ -82,32 +83,20 @@ public class LoginActivity extends AppCompatActivity {
                 JSONObject obj = new JSONObject();
 
 
-                JSONObject jsonParams = new JSONObject();
-                try {
-                    jsonParams.put("user", obj);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                StringEntity entity = null;
-                try {
-                    entity = new StringEntity(jsonParams.toString());
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-
-                entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
 
                 try {
 
                     obj.put("email", email);
                     obj.put("password", pwd);
 
-                    params.put("user", obj);
+                    JSONObject jsonParams = new JSONObject();
+                    try {
+                        jsonParams.put("user", obj);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     final AsyncHttpClient client = new AsyncHttpClient();
-                    Log.v(TAG, entity.toString());
                     Log.v(TAG, String.valueOf(params));
 
                     ByteArrayEntity _entity = new ByteArrayEntity(jsonParams.toString().getBytes("UTF-8"));

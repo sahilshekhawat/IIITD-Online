@@ -24,7 +24,7 @@ import cz.msebera.android.httpclient.entity.ByteArrayEntity;
 
 public class CreateCommunity extends AppCompatActivity {
 
-    private static final String URL = "https://immense-tundra-31422.herokuapp.com/";
+    private  String URL;
     private static final String TAG = "DEBUG";
     private Session session;//global variable
 
@@ -32,7 +32,7 @@ public class CreateCommunity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_community);
-
+        URL = getResources().getString(R.string.backendURL);
         session = new Session(getApplicationContext());
         Button submit = (Button) findViewById(R.id.btn);
         final EditText nameView = (EditText) findViewById(R.id.name);
